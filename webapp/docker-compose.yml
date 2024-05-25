@@ -1,0 +1,54 @@
+services:
+  api:
+    pull_policy: never
+    image: webapp:0.0.3
+    build: .
+    container_name: webapp_api
+    env_file:
+      - .env
+    command: python manage.py runserver 0:8000
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8000"
+    networks:
+      - net
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.3
+    container_name: webapp_db
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "8002:5432"
+    networks:
+      - net
+
+  pgadmin:
+    image: dpage/pgadmin4:8.5
+    container_name: eso_v3_pgadmin_local
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - pgadmin_local:/var/lib/pgadmin
+    ports:
+      - "8004:80"
+    networks:
+      - net
+
+networks:
+  net:
+    name: webapp
+    external: false
+
+volumes:
+  pg_data: {}
+  static_files_local: {}
+  pgadmin_local: {}
