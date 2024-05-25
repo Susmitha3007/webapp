@@ -33,7 +33,6 @@ class RegisterNewUser(APIView):
     response:
         {"error": "User creation failed or user already exists"}
 
-    Developer: Susmitha N
     """
 
     permission_classes = [permissions.AllowAny]
@@ -121,7 +120,6 @@ class LoginView(APIView):
     status_code: 400
     output: { "error": "invalid credentials" }
 
-    Developer: Susmitha N
     """
 
     permission_classes = [permissions.AllowAny]
@@ -168,7 +166,6 @@ class LogoutView(APIView):
     status_code: 200
     output: {"status": "success"}
 
-    Developer: Susmitha N
     """
 
     # authentication_classes = [authentication.SessionAuthentication]
@@ -198,7 +195,6 @@ class PasswordChangeView(generics.GenericAPIView):
     status_code: 403
     output:{ "detail": "Authentication credentials were not provided." }
 
-    Developer: Susmitha N
     """
 
     serializer_class = serializer.PasswordChangeSerializer
@@ -218,7 +214,6 @@ class SendPasswordResetLinkView(generics.GenericAPIView):
     method: POST
     params: {"email": <email-id>}
 
-    Developer: Susmitha N
     """
 
     permission_classes = [permissions.AllowAny]
@@ -245,8 +240,6 @@ class ResetPasswordView(generics.GenericAPIView):
 
     status_code: 200
     output: {"status": "success"}
-
-    Developer: Susmitha N
     """
 
     permission_classes = [permissions.AllowAny]
@@ -260,16 +253,70 @@ class ResetPasswordView(generics.GenericAPIView):
 
 
 class ViewUser(APIView):
+    """
+    A class to handle viewing the detailed information of the authenticated user.
+
+    Methods
+    -------
+    get(request: Request):
+        Retrieves and returns the detailed information of the authenticated user.
+    """
 
     def get(self, request: Request):
+        """
+        Handles GET requests to retrieve detailed information of the authenticated user.
+
+        Parameters
+        ----------
+        request : Request
+            The incoming request object.
+
+        Returns
+        -------
+        Response
+            A Response object containing the detailed information of the authenticated 
+            user. If the user is not authenticated or if an error occurs during 
+            retrieval, an appropriate error message and status code are returned.
+        """
         user_objs = get_user_model().objects.filter(id=request.user.id)
         user_objs = list(user_objs.values())
         return Response(user_objs)
 
 
 class EditUser(APIView):
+    """
+    A class to handle updating user information.
+
+    Methods
+    -------
+    post(request: Request):
+        Processes the incoming request to update the user's information 
+        (first name, last name, email, and username) based on provided data.
+    """
 
     def post(self, request: Request):
+        """
+        Handles POST requests to update user information.
+
+        Parameters
+        ----------
+        request : Request
+            The incoming request object containing data with keys "user_name", 
+            "first_name", "last_name", and "email".
+
+        Returns
+        -------
+        Response
+            A Response object indicating whether the update was successful 
+            and returning the updated user information. If authentication 
+            credentials are not provided, an error message is returned.
+
+        Raises
+        ------
+        Response
+            If authentication credentials are not provided, returns a Response 
+            object with a relevant error message and a 400 status code.
+        """
         query_params = request.data
         user_name = query_params.get("user_name")
         first_name = query_params.get("first_name")
@@ -306,8 +353,32 @@ class EditUser(APIView):
 
 
 class Deleteuser(APIView):
+    """
+    A class to handle the deletion of the authenticated user.
+
+    Methods
+    -------
+    get(request: Request):
+        Deletes the authenticated user and returns a message confirming 
+        the deletion.
+    """
 
     def get(self, request: Request):
+        """
+        Handles GET requests to delete the authenticated user.
+
+        Parameters
+        ----------
+        request : Request
+            The incoming request object.
+
+        Returns
+        -------
+        Response
+            A Response object containing a message confirming the deletion 
+            of the user. If the authentication credentials are not provided, 
+            an error message is returned with a 400 status code.
+        """
         username = request.user.username
         user_objs = get_user_model().objects.filter(id=request.user.id)
         if not user_objs:

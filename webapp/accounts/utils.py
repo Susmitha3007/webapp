@@ -18,7 +18,6 @@ def send_html_mail(
     """
     Using this function we can send a html email to given email address, It also has optional way to attach an pdf file. By default the pdf file will be deleted after sending mail, we can override this step.
 
-    Developer: Pall Pandiyan.S
     """
     html_content = render_to_string(template_name, context)
     text_content = strip_tags(html_content)
